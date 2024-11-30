@@ -1,6 +1,5 @@
 // pages/api/send-email.js
 const nodemailer = require('nodemailer');
-require('dotenv').config();
 import centres from '../../centres'; // Import centres
 
 const sendEmail = async (req, res) => {
