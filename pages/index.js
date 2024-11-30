@@ -49,6 +49,7 @@ export default function Home() {
           />
 
           {/* Select Field for Centre */}
+          
           <select
             required
             value={userData.centreId}
@@ -66,6 +67,7 @@ export default function Home() {
               </option>
             ))}
           </select>
+          <p className='text-sm'>В этот центр будут отправлены результаты теста и там вы собираетесь проходить обучение второму модулю</p>
 
           <button
             type="submit"

@@ -151,7 +151,7 @@ export default function Result() {
               К сожалению, вы не прошли тест, попробуйте еще раз.
             </h2>
             <p className="text-lg">
-              Вы ответили правильно на: <strong>{correctAnswers}</strong> из {questions.length} вопросов.
+              Вы ответили правильно на: <strong>{correctAnswers}</strong> из {questions.length} вопросов, к сожалению этого не достаточно для допуска ко второму модулю.
             </p>
             <p className="text-lg mb-4">
               Страница перенаправится на главную через {countdown} секунд.
