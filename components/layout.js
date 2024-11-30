@@ -12,7 +12,7 @@ export default function Layout({ children }) {
         </header>
   
         {/* Main Content */}
-        <main className="flex-grow container mx-auto px-4 py-6 md:w-2/3">
+        <main className="flex-grow container mx-auto px-4 py-6 my-6 md:w-2/3 rounded-xl shadow-xl">
           {children}
         </main>
   

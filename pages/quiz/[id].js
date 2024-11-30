@@ -85,7 +85,7 @@ export default function QuizPage() {
         {currentQuestions.map((q) => {
           const isMultipleChoice = q.correctAnswer.length > 1;
           return (
-            <div key={q.number} className="bg-white p-6 rounded shadow">
+            <div key={q.number} className="bg-white p-6 rounded-md shadow">
               <p className="font-medium text-gray-600 mb-4">
                 {q.number}) <strong>{q.question}</strong>
               </p>
@@ -97,23 +97,24 @@ export default function QuizPage() {
                     ? Array.isArray(answers[q.number]) &&
                       answers[q.number].includes(inputValue)
                     : answers[q.number] == inputValue;
-                  return (
-                    <div key={idx} className="flex items-center">
-                      <label className="flex items-center text-gray-600">
+                const optionClass = isChecked ? 'bg-green-200' : '';
+                return (
+                    <div key={idx} className={`flex items-center rounded-md ${optionClass}`}>
+                    <label className="flex p-2 items-center text-gray-600 w-full">
                         <input
-                          type={isMultipleChoice ? 'checkbox' : 'radio'}
-                          name={
+                        type={isMultipleChoice ? 'checkbox' : 'radio'}
+                        name={
                             isMultipleChoice ? `${inputName}-${idx}` : inputName
-                          }
-                          value={inputValue}
-                          checked={isChecked}
-                          onChange={() =>
+                        }
+                        value={inputValue}
+                        checked={isChecked}
+                        onChange={() =>
                             handleAnswer(q.number, inputValue, isMultipleChoice)
-                          }
-                          className="mr-2 focus:ring-blue-600"
+                        }
+                        className="mr-2 focus:ring-blue-600"
                         />
                         {opt}
-                      </label>
+                    </label>
                     </div>
                   );
                 })}
@@ -126,7 +127,7 @@ export default function QuizPage() {
             onClick={handleNext}
             className="mt-6 bg-blue-600 text-white py-2 px-8 rounded hover:bg-blue-700 transition-colors"
           >
-            {page < totalPages ? 'Next Page' : 'Submit'}
+            {page < totalPages ? 'Следующая страница' : 'Отправить'}
           </button>
         </div>
       </motion.div>
