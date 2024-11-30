@@ -4,7 +4,7 @@ const centres = [
     {
       id: '1',
       name: 'Центр EMDR Москва',
-      adminEmail: 'moscow-admin@example.com',
+      adminEmail: 'emdr.ru@gmail.com',
     },
     {
       id: '2',
