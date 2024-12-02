@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { motion } from 'framer-motion';
 import Layout from '../components/layout';
 import centres from '../centres'; // Import the centres
+import Head from 'next/head'; // Import Head from next/head
 
 export default function Home() {
   const router = useRouter();
@@ -17,6 +18,10 @@ export default function Home() {
 
   return (
     <Layout>
+      <Head>
+        <title>Тест EMDR</title>
+        <meta name="description" content="Тест на знание базового протокола EMDR" />
+      </Head>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
