@@ -4,7 +4,8 @@ import { useRouter } from 'next/router';
 import questions from '../questions';
 import { motion } from 'framer-motion';
 import Layout from '../components/layout';
-import Head from 'next/head'; // Import Head from next/head
+import Head from 'next/head';
+import * as gtag from '../lib/gtag';
 
 export default function Result() {
   const router = useRouter();
@@ -53,9 +54,21 @@ export default function Result() {
     if (percentage > 70) {
       setPassed(true);
       sendEmail(correct, totalQuestions);
+      gtag.event({
+        action: 'quiz_result',
+        category: 'Quiz',
+        label: 'Pass',
+        value: correct,
+      });
     } else {
       setPassed(false);
-      startCountdown(); // Start countdown immediately
+      startCountdown();
+      gtag.event({
+        action: 'quiz_result',
+        category: 'Quiz',
+        label: 'Fail',
+        value: correct,
+      });
     }
   }, []);
 
