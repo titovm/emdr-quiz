@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react';
 import questions from '../../questions';
 import { motion } from 'framer-motion';
 import Layout from '../../components/layout';
-import * as gtag from '../../lib/gtag'; 
+import * as gtag from '../../lib/gtag';
+import QuestionItem from '../../components/QuestionItem'
 
 const questionsPerPage = 10;
 const totalPages = Math.ceil(questions.length / questionsPerPage);
@@ -102,7 +103,7 @@ export default function QuizPage() {
           return (
             <div key={q.number} className="bg-white p-2 md:p-6 rounded-md shadow">
               <p className="font-medium text-gray-600 mb-4">
-                {q.number}) <strong>{q.question}</strong>
+                <QuestionItem key={q.number} number={q.number} question={q.question} />
               </p>
               <div className="space-y-2">
                 {q.options.map((opt, idx) => {
@@ -119,12 +120,12 @@ export default function QuizPage() {
                         <input
                         type={isMultipleChoice ? 'checkbox' : 'radio'}
                         name={
-                            isMultipleChoice ? `${inputName}-${idx}` : inputName
+                          isMultipleChoice ? `${inputName}-${idx}` : inputName
                         }
                         value={inputValue}
                         checked={isChecked}
                         onChange={() =>
-                            handleAnswer(q.number, inputValue, isMultipleChoice)
+                          handleAnswer(q.number, inputValue, isMultipleChoice)
                         }
                         className="mr-2 focus:ring-blue-600"
                         />
