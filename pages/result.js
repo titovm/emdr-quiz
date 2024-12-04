@@ -54,20 +54,16 @@ export default function Result() {
     if (percentage > 70) {
       setPassed(true);
       sendEmail(correct, totalQuestions);
-      gtag.event({
-        action: 'quiz_result',
-        category: 'Quiz',
-        label: 'Pass',
-        value: correct,
+      gtag.event('quiz_result', {
+        result: 'Pass',
+        correct_answers: correct,
       });
     } else {
       setPassed(false);
       startCountdown();
-      gtag.event({
-        action: 'quiz_result',
-        category: 'Quiz',
-        label: 'Fail',
-        value: correct,
+      gtag.event('quiz_result', {
+        result: 'Fail',
+        correct_answers: correct,
       });
     }
   }, []);
