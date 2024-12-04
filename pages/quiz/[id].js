@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import questions from '../../questions';
 import { motion } from 'framer-motion';
 import Layout from '../../components/layout';
+import * as gtag from '../../lib/gtag'; 
 
 const questionsPerPage = 10;
 const totalPages = Math.ceil(questions.length / questionsPerPage);
@@ -13,6 +14,7 @@ export default function QuizPage() {
   const { id } = router.query;
   const page = parseInt(id);
   const [answers, setAnswers] = useState({});
+  const [startTime, setStartTime] = useState(null); 
 
   useEffect(() => {
     const savedAnswers = JSON.parse(localStorage.getItem('answers') || '{}');
@@ -31,7 +33,20 @@ export default function QuizPage() {
       }
     });
     setAnswers(adjustedAnswers);
-  }, []);
+    setStartTime(Date.now());
+
+    return () => {
+      // This cleanup function runs when the component unmounts (user navigates away)
+      if (startTime) {
+        const timeSpent = Math.floor((Date.now() - startTime) / 1000); // Time in seconds
+        // Send event to Google Analytics
+        gtag.event('quiz_page_time', {
+          page_number: page,
+          time_spent: timeSpent,
+        });
+      }
+    };
+  }, [page]);
 
   const handleAnswer = (qIndex, value, isMultipleChoice) => {
     let newAnswers = { ...answers };
