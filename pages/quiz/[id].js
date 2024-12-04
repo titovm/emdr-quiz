@@ -94,13 +94,13 @@ export default function QuizPage() {
             style={{ width: `${(page / totalPages) * 100}%` }}
           ></div>
         </div>
-        <h2 className="text-2xl font-semibold mb-4 text-center">
+        <h2 className="text-2xl font-semibold mb-4 text-center dark:text-gray-700">
           Страница {page} из {totalPages}
         </h2>
         {currentQuestions.map((q) => {
           const isMultipleChoice = q.correctAnswer.length > 1;
           return (
-            <div key={q.number} className="bg-white p-6 rounded-md shadow">
+            <div key={q.number} className="bg-white p-2 md:p-6 rounded-md shadow">
               <p className="font-medium text-gray-600 mb-4">
                 {q.number}) <strong>{q.question}</strong>
               </p>
