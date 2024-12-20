@@ -26,7 +26,7 @@ export default function Home() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="max-w-md mx-auto bg-white p-8 rounded shadow"
+        className="max-w-md mx-auto bg-white p-8 rounded"
       >
         <h2 className="text-2xl font-semibold text-gray-600 mb-6 text-center">
           Тест на знание базового протокола EMDR
