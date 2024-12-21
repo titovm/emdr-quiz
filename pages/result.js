@@ -28,7 +28,7 @@ const storeQuizResult = async (userData, correctAnswers, totalQuestions) => {
 
     const { url } = await put(`quiz-results/${Date.now()}-${userData.email}.json`, blob, {
       access: 'public',
-      token: process.env.NEXT_PUBLIC_BLOB_READ_WRITE_TOKEN,
+      token: process.env.BLOB_READ_WRITE_TOKEN,
     });
 
     console.log('Results stored at:', url);
