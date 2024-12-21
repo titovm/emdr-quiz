@@ -1,5 +1,5 @@
 // pages/result.js
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/router';
 import questions from '../questions';
 import { motion } from 'framer-motion';
@@ -28,7 +28,7 @@ const storeQuizResult = async (userData, correctAnswers, totalQuestions) => {
 
     const { url } = await put(`quiz-results/${Date.now()}-${userData.email}.json`, blob, {
       access: 'public',
-      token: process.env.BLOB_READ_WRITE_TOKEN,
+      token: process.env.NEXT_PUBLIC_BLOB_READ_WRITE_TOKEN,
     });
 
     console.log('Results stored at:', url);
@@ -48,8 +48,12 @@ export default function Result() {
   const [emailSent, setEmailSent] = useState(false);
   const [countdown, setCountdown] = useState(null);
   const [answers, setAnswers] = useState({});
+  const calledRef = useRef(false);
+
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;  
+
     const savedAnswers = JSON.parse(localStorage.getItem('answers') || '{}');
     const userData = JSON.parse(localStorage.getItem('userData') || '{}');
     setAnswers(savedAnswers);
@@ -82,14 +86,15 @@ export default function Result() {
         if (userNum === correctNum) correct++;
       }
     });
-
-    setCorrectAnswers(correct);
     
     const totalQuestions = questions.length;
     const percentage = (correct / totalQuestions) * 100;
 
-    // Store results in Vercel Blob
-    storeQuizResult(userData, correct, totalQuestions);
+    if (!calledRef.current) {
+      calledRef.current = true;
+      // Run one-time-only client code here
+      storeQuizResult(userData, correct, totalQuestions);
+    }
 
     if (percentage > 70) {
       setPassed(true);
