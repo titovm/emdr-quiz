@@ -3,9 +3,41 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import questions from '../questions';
 import { motion } from 'framer-motion';
-import Layout from '../components/layout';
+import Layout from '@/components/layout';
+import Countdown from '@/components/countdown';
 import Head from 'next/head';
+import { put } from '@vercel/blob';
 import * as gtag from '../lib/gtag';
+
+// Function to store quiz results in Vercel Blob
+const storeQuizResult = async (userData, correctAnswers, totalQuestions) => {
+  try {
+    const result = {
+      timestamp: new Date().toISOString(),
+      name: userData.name,
+      email: userData.email,
+      centre: userData.centreId,
+      correctAnswers,
+      totalQuestions,
+      passed: correctAnswers / totalQuestions > 0.7
+    };
+
+    const blob = new Blob([JSON.stringify(result)], {
+      type: 'application/json',
+    });
+
+    const { url } = await put(`quiz-results/${Date.now()}-${userData.email}.json`, blob, {
+      access: 'public',
+      token: process.env.BLOB_READ_WRITE_TOKEN,
+    });
+
+    console.log('Results stored at:', url);
+    return url;
+  } catch (error) {
+    console.error('Failed to store results:', error);
+    return null;
+  }
+};
 
 export default function Result() {
   const router = useRouter();
@@ -14,11 +46,12 @@ export default function Result() {
   const [emailStatus, setEmailStatus] = useState(null);
   const [loading, setLoading] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
-  const [countdown, setCountdown] = useState(null); // New state variable
-  const [answers, setAnswers] = useState({}); // New state variable
+  const [countdown, setCountdown] = useState(null);
+  const [answers, setAnswers] = useState({});
 
   useEffect(() => {
     const savedAnswers = JSON.parse(localStorage.getItem('answers') || '{}');
+    const userData = JSON.parse(localStorage.getItem('userData') || '{}');
     setAnswers(savedAnswers);
     
     let correct = 0;
@@ -54,6 +87,9 @@ export default function Result() {
     
     const totalQuestions = questions.length;
     const percentage = (correct / totalQuestions) * 100;
+
+    // Store results in Vercel Blob
+    storeQuizResult(userData, correct, totalQuestions);
 
     if (percentage > 70) {
       setPassed(true);
@@ -185,9 +221,7 @@ export default function Result() {
 
             {/* Countdown */}
             {emailSent && countdown !== null && (
-              <p className="mt-4 text-gray-600">
-                Вы будете перенаправлены на главную страницу через {countdown} секунд.
-              </p>
+              <Countdown countdown={countdown} />
             )}
           </div>
         ) : (
@@ -239,11 +273,7 @@ export default function Result() {
             </div>
             {/* Countdown */}
             {countdown !== null && (
-                <div className="mt-4 text-gray-600">
-                <p className="mt-4 text-gray-600">
-                  Вы будете перенаправлены на главную страницу через {countdown} секунд.
-                </p>
-                </div>
+                <Countdown countdown={countdown} />
               )}
           </div>
         )}
