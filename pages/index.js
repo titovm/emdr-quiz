@@ -8,7 +8,7 @@ import Head from 'next/head'; // Import Head from next/head
 
 export default function Home() {
   const router = useRouter();
-  const [userData, setUserData] = useState({ name: '', email: '', centreId: '' });
+  const [userData, setUserData] = useState({ name: '', email: '', centreId: '', testType: '1' });
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -73,6 +73,21 @@ export default function Home() {
             ))}
           </select>
           <p className='text-sm dark:text-gray-700'>В этом центре вы собираетесь обучаться второму модулю и аминистратору будут отправлены Ваши результаты.</p>
+
+          {/* Select Field for Test Type */}
+          <select
+            required
+            value={userData.testType}
+            onChange={(e) =>
+              setUserData({ ...userData, testType: e.target.value })
+            }
+            className="w-full px-4 py-2 border border-gray-300 text-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-600"
+          >
+            <option value="1">Вопросы после первого модуля</option>
+            <option value="2">Вопросы после второго модуля</option>
+          </select>
+          <p className='text-sm dark:text-gray-700'>После прохождения первого модуля, вам нужно будет пройти тест для прохождения второго модуля. <br />
+          После прохождения второго модуля, вам нужно будет пройти тест для получения сертификата.</p>
 
           <button
             type="submit"

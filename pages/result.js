@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import questions from '../questions';
+import questions2 from '../questions2';
 import { motion } from 'framer-motion';
 import Layout from '../components/layout';
 import Head from 'next/head';
@@ -16,13 +17,24 @@ export default function Result() {
   const [emailSent, setEmailSent] = useState(false);
   const [countdown, setCountdown] = useState(null); // New state variable
   const [answers, setAnswers] = useState({}); // New state variable
+  const [selectedQuestions, setSelectedQuestions] = useState([]);
+
+  // Get the correct questions based on test type
+  const getQuestions = () => {
+    const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+    const testType = userData.testType || '1';
+    return testType === '2' ? questions2 : questions;
+  };
 
   useEffect(() => {
+    const currentQuestions = getQuestions();
+    setSelectedQuestions(currentQuestions);
+    
     const savedAnswers = JSON.parse(localStorage.getItem('answers') || '{}');
     setAnswers(savedAnswers);
     
     let correct = 0;
-    questions.forEach((q) => {
+    currentQuestions.forEach((q) => {
       const userAnswer = savedAnswers[q.number];
       if (!userAnswer) return; // Skip if no answer
       
@@ -52,7 +64,7 @@ export default function Result() {
 
     setCorrectAnswers(correct);
     
-    const totalQuestions = questions.length;
+    const totalQuestions = currentQuestions.length;
     const percentage = (correct / totalQuestions) * 100;
 
     if (percentage > 70) {
@@ -133,12 +145,12 @@ export default function Result() {
               Поздравляем! Вы прошли тест.
             </h2>
             <p className="text-lg mb-8">
-              Вы ответили правильно на: {correctAnswers} из {questions.length} вопросов.
+              Вы ответили правильно на: {correctAnswers} из {selectedQuestions.length} вопросов.
             </p>
 
             {/* Question Grid */}
             <div className="grid grid-cols-5 md:grid-cols-8 gap-4 mb-8 max-w-3xl mx-auto">
-              {questions.map((q) => {
+              {selectedQuestions.map((q) => {
                 const userAnswer = answers[q.number];
                 // Skip if no answer
                 if (!userAnswer) return false;
@@ -196,12 +208,12 @@ export default function Result() {
               К сожалению, вы не прошли тест, попробуйте еще раз.
             </h2>
             <p className="text-lg mb-8">
-              Вы ответили правильно на: <strong>{correctAnswers}</strong> из {questions.length} вопросов, к сожалению этого не достаточно для допуска ко второму модулю.
+              Вы ответили правильно на: <strong>{correctAnswers}</strong> из {selectedQuestions.length} вопросов, к сожалению этого не достаточно для допуска ко второму модулю.
             </p>
             
             {/* Question Grid for failed attempt */}
             <div className="grid grid-cols-5 md:grid-cols-8 gap-4 mb-8 max-w-3xl mx-auto">
-              {questions.map((q) => {
+              {selectedQuestions.map((q) => {
                 const userAnswer = answers[q.number];
                 // Skip if no answer
                 if (!userAnswer) return false;

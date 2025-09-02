@@ -18,6 +18,9 @@ const sendEmail = async (req, res) => {
     return res.status(400).json({ message: 'Invalid centre selected' });
   }
 
+  // Determine test name based on test type
+  const testName = userData.testType === '2' ? 'Вопросы после второго модуля' : 'Вопросы для второго модуля';
+
   // Configure your SMTP server details
   const transporter = nodemailer.createTransport({
     host: "postbox.cloud.yandex.net",
@@ -33,10 +36,11 @@ const sendEmail = async (req, res) => {
   const userMailOptions = {
     from: 'Ассоциация EMDR России <info@emdr.ru>',
     to: userData.email,
+    replyTo: adminEmail,
     subject: 'Результаты теста EMDR',
     html: `
       <p>Здравствуйте, ${userData.name},</p>
-      <p>Поздравляем! Вы успешно прошли тест EMDR с результатом <strong>${correct} из ${totalQuestions}</strong>.</p>
+      <p>Поздравляем! Вы успешно прошли тест EMDR "${testName}" с результатом <strong>${correct} из ${totalQuestions}</strong>.</p>
       <p>Спасибо за участие.</p>
       <p>С наилучшими пожеланиями,<br/>Ассоциация EMDR Россия</p>
     `,
@@ -49,7 +53,7 @@ const sendEmail = async (req, res) => {
     subject: 'Результаты теста EMDR',
     html: `
       <p>Здравствуйте,</p>
-      <p><strong>${userData.name} (${userData.email})</strong> прошел тест EMDR с результатом <strong>${correct} из ${totalQuestions}</strong>.</p>
+      <p><strong>${userData.name} (${userData.email})</strong> прошел тест EMDR "${testName}" с результатом <strong>${correct} из ${totalQuestions}</strong>.</p>
       <p>С уважением,<br/>Ассоциация EMDR Россия</p>
     `,
   };

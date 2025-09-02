@@ -2,27 +2,41 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import questions from '../../questions';
+import questions2 from '../../questions2';
 import { motion } from 'framer-motion';
 import Layout from '../../components/layout';
 import * as gtag from '../../lib/gtag';
 import QuestionItem from '../../components/QuestionItem'
 
 const questionsPerPage = 10;
-const totalPages = Math.ceil(questions.length / questionsPerPage);
 
 export default function QuizPage() {
   const router = useRouter();
   const { id } = router.query;
   const page = parseInt(id);
   const [answers, setAnswers] = useState({});
-  const [startTime, setStartTime] = useState(null); 
+  const [startTime, setStartTime] = useState(null);
+  const [currentQuestions, setCurrentQuestions] = useState([]);
+  const [totalPages, setTotalPages] = useState(1);
+
+  // Get the correct questions based on test type
+  const getQuestions = () => {
+    const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+    const testType = userData.testType || '1';
+    return testType === '2' ? questions2 : questions;
+  }; 
 
   useEffect(() => {
+    const selectedQuestions = getQuestions();
+    const totalPagesCount = Math.ceil(selectedQuestions.length / questionsPerPage);
+    setTotalPages(totalPagesCount);
+    setCurrentQuestions(selectedQuestions.slice((page - 1) * 10, page * 10));
+
     const savedAnswers = JSON.parse(localStorage.getItem('answers') || '{}');
     // Ensure that multiple-choice answers are arrays
     const adjustedAnswers = {};
     Object.keys(savedAnswers).forEach((key) => {
-      const question = questions.find((q) => q.number.toString() === key);
+      const question = selectedQuestions.find((q) => q.number.toString() === key);
       const isMultipleChoice = question && question.correctAnswer.length > 1;
       if (isMultipleChoice) {
         // Ensure the answer is an array
@@ -70,14 +84,12 @@ export default function QuizPage() {
   };
 
   const handleNext = () => {
-    if (page < 4) {
+    if (page < totalPages) {
       router.push(`/quiz/${page + 1}`);
     } else {
       router.push('/result');
     }
   };
-
-  const currentQuestions = questions.slice((page - 1) * 10, page * 10);
 
   if (!page) return null;
 
