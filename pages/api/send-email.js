@@ -12,6 +12,7 @@ const sendEmail = async (req, res) => {
 
   // Get the administrator's email
   const adminEmail = selectedCentre ? selectedCentre.adminEmail : null;
+  const centreName = selectedCentre ? selectedCentre.name : null;
 
   // Ensure adminEmail exists
   if (!adminEmail) {
@@ -36,11 +37,12 @@ const sendEmail = async (req, res) => {
   const userMailOptions = {
     from: 'Ассоциация EMDR России <info@emdr.ru>',
     to: userData.email,
-    replyTo: adminEmail,
     subject: 'Результаты теста EMDR',
     html: `
       <p>Здравствуйте, ${userData.name},</p>
       <p>Поздравляем! Вы успешно прошли тест EMDR "${testName}" с результатом <strong>${correct} из ${totalQuestions}</strong>.</p>
+      <p>Центр: <strong>${centreName}</strong></p>
+      <p>По всем вопросам обращайтесь к администратору центра, по адресу: <strong>${adminEmail}</strong>.</p>
       <p>Спасибо за участие.</p>
       <p>С наилучшими пожеланиями,<br/>Ассоциация EMDR Россия</p>
     `,
