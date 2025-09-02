@@ -20,7 +20,7 @@ const sendEmail = async (req, res) => {
   }
 
   // Determine test name based on test type
-  const testName = userData.testType === '2' ? 'Вопросы после второго модуля' : 'Вопросы для второго модуля';
+  const testName = userData.testType === '2' ? 'Вопросы после второго модуля' : 'Вопросы после первого модуля';
 
   // Configure your SMTP server details
   const transporter = nodemailer.createTransport({
